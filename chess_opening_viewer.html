@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>チェスオープニング解説ビューア</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #board {
+      width: 360px;
+      margin: 20px;
+    }
+    #comment-box {
+      max-width: 500px;
+      padding: 10px;
+      background-color: #f2f2f2;
+      border-radius: 8px;
+      margin: 10px;
+      min-height: 60px;
+    }
+    .nav-buttons {
+      margin: 10px;
+    }
+    button {
+      padding: 10px 15px;
+      margin: 5px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      background-color: #333;
+      color: white;
+      cursor: pointer;
+    }
+    button:disabled {
+      background-color: #aaa;
+    }
+    @media (min-width: 768px) {
+      body {
+        flex-direction: row;
+        justify-content: center;
+        align-items: flex-start;
+      }
+      #comment-box {
+        margin-left: 20px;
+        margin-top: 40px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+</head>
+<body>
+
+<div id="board"></div>
+<div>
+  <div id="comment-box">ここに解説が表示されます。</div>
+  <div class="nav-buttons">
+    <button id="prevBtn">← 前へ</button>
+    <button id="nextBtn">次へ →</button>
+  </div>
+</div>
+
+<script src="https://unpkg.com/chess.js@1.0.0/chess.min.js"></script>
+<script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+<script>
+const steps = [
+  {
+    fen: "start",
+    comment: "オープニング開始。白の初手に注目しましょう。"
+  },
+  {
+    fen: "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+    comment: "1.e4：中央を支配するポーン。最も人気のある初手です。"
+  },
+  {
+    fen: "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2",
+    comment: "1...c5：シシリアン・ディフェンス。反撃を狙う非対称な応手。"
+  },
+  {
+    fen: "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2",
+    comment: "2.Nf3：e5を狙いつつ素早く展開。自然な2手目です。"
+  }
+];
+
+let currentIndex = 0;
+const board = Chessboard('board', { position: steps[0].fen });
+const commentBox = document.getElementById('comment-box');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+function updateView() {
+  board.position(steps[currentIndex].fen);
+  commentBox.innerText = steps[currentIndex].comment;
+  prevBtn.disabled = currentIndex === 0;
+  nextBtn.disabled = currentIndex === steps.length - 1;
+}
+
+prevBtn.onclick = () => {
+  if (currentIndex > 0) {
+    currentIndex--;
+    updateView();
+  }
+};
+
+nextBtn.onclick = () => {
+  if (currentIndex < steps.length - 1) {
+    currentIndex++;
+    updateView();
+  }
+};
+
+updateView();
+</script>
+</body>
+</html>
