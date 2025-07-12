@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>チェスオープニングWiki 試作</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/css/chessboard.min.css" />
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    #board {
+      width: 400px;
+      margin-bottom: 20px;
+    }
+    #comment {
+      max-width: 600px;
+      font-size: 16px;
+      line-height: 1.6;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h1>チェスオープニングWiki<br><span style="font-size: 0.6em;">（試作）</span></h1>
+  <div id="board"></div>
+  <div id="comment">この局面は初期配置です。白は e4 や d4 などの中央支配を目指す手が候補となります。</div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/1.0.0/chess.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/js/chessboard.min.js"></script>
+  <script>
+    const board = Chessboard('board', {
+      position: 'start',
+      draggable: true,
+      dropOffBoard: 'snapback',
+      onDrop: onDrop
+    });
+
+    const game = new Chess();
+
+    const comments = {
+      'start': 'この局面は初期配置です。白は e4 や d4 などの中央支配を目指す手が候補となります。',
+      'e4': '白は e4 を指しました。これは最も人気のある初手で、キングの前進とビショップの展開を狙います。',
+      'd4': '白は d4 を指しました。これはクイーンサイドの支配を目指す伝統的な初手です。'
+    };
+
+    function onDrop(source, target, piece, newPos, oldPos, orientation) {
+      const move = game.move({ from: source, to: target, promotion: 'q' });
+
+      if (move === null) return 'snapback';
+
+      const fen = game.fen();
+      const key = move.san.toLowerCase().replace(/[+#]$/, '');
+      document.getElementById('comment').textContent = comments[key] || 'この局面にはまだコメントがありません。';
+    }
+  </script>
+</body>
+</html>
