@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>チェスオープニングWiki 試作</title>
+  <link rel="stylesheet" href="https://unpkg.com/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css" />
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    #board {
+      width: 400px;
+      margin-bottom: 20px;
+    }
+    #comment {
+      max-width: 600px;
+      font-size: 16px;
+      line-height: 1.6;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h1>チェスオープニングWiki（試作）</h1>
+  <div id="board"></div>
+  <div id="comment">この局面は初期配置です。白は e4 や d4 などの中央支配を目指す手が候補となります。</div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/1.0.0/chess.min.js"></script>
+  <script src="https://unpkg.com/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+  <script>
+    const game = new Chess();
+
+    const comments = {
+      "start": "この局面は初期配置です。白は e4 や d4 などの中央支配を目指す手が候補となります。",
+      "e4": "1.e4 は最も人気のあるオープニングの一つで、スピーディに中央を制圧します。",
+      "d4": "1.d4 は安定志向のオープニングで、ポジショナルな戦いになりやすいです。",
+    };
+
+    const board = Chessboard('board', {
+      position: 'start',
+      draggable: true,
+      dropOffBoard: 'snapback',
+      onDrop: (source, target) => {
+        const move = game.move({ from: source, to: target, promotion: 'q' });
+
+        if (move === null) return 'snapback';
+
+        const moveStr = game.history()[0];
+        document.getElementById("comment").innerText = comments[moveStr] || "この局面に関するコメントはまだありません。";
+      }
+    });
+  </script>
+</body>
+</html>
